@@ -78,13 +78,13 @@ public class Menu {
         String dateCheckIn = input.nextLine();
         System.out.println("Check Out: ");
         String dateCheckOut = input.nextLine();
-        System.out.println("Include Pool: [ENTER] 1 OR 0 ");
+        System.out.println("Include Pool: [ENTER] YES:1 OR NO:0 ");
         int pool = Integer.parseInt(input.nextLine());
-        System.out.println("Include Entertainment: [ENTER] 1 OR 0 ");
+        System.out.println("Include Entertainment: [ENTER] YES:1 OR NO:0 ");
         int eveEntertainment = Integer.parseInt(input.nextLine());
-        System.out.println("Include Child Club: [ENTER] 1 OR 0 ");
+        System.out.println("Include Child Club: [ENTER] YES:1 OR NO:0 ");
         int childClub = Integer.parseInt(input.nextLine());
-        System.out.println("Include Restaurant: [ENTER ] 1 OR 0 ");
+        System.out.println("Include Restaurant: [ENTER ] YES:1 OR NO:0 ");
         int restaurant = Integer.parseInt(input.nextLine());
         db.filterRooms(dateCheckIn,dateCheckOut,pool, eveEntertainment,childClub,restaurant);
         db.printAvailableRooms();
