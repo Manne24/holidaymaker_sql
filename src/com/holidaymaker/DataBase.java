@@ -75,7 +75,7 @@ public class DataBase {
     public void filterRooms(String DateCheckIn, String DateCheckOut, int pool , int eveEnterainment, int childClub, int resutrant) {
 
         try {
-            statement = connection.prepareStatement("SELECT room_number, `name` AS 'Hotel', city , country FROM bookings\n" +
+            statement = connection.prepareStatement("SELECT room_number,accommodations.id, `name` AS 'Hotel', city , country FROM bookings\n" +
                     "JOIN rooms ON bookings.room_number_id = rooms.room_number\n" +
                     "JOIN accommodations ON bookings.accommodation_id = accommodations.id\n" +
                     "JOIN adress ON bookings.accommodation_id = adress.id \n" +
@@ -100,7 +100,8 @@ public class DataBase {
     public void printAvailableRooms() {
         try {
             while (resultSet.next()) {
-                String roomsPrint = "ROOM ID: " + resultSet.getString("room_number")
+                String roomsPrint = "ROOM NR: " + resultSet.getString("room_number")
+                        + ", HOTEL ID: " + resultSet.getString("accommodations.id")
                         + ", HOTEL: " + resultSet.getString("Hotel")
                         + ", CITY: " + resultSet.getString("city")
                         + ", COUNTRY: " + resultSet.getString("country");
@@ -111,5 +112,28 @@ public class DataBase {
         }
     }
 
-    
+    public void bookRoom(String date_from, String date_to, int customers_id, int accommodation_id){
+        try {
+            statement = connection.prepareStatement("INSERT INTO bookings (date_from, date_to, customers_id, accommodation_id) VALUES (?, ?, ?, ?)");
+            statement.setString(1, date_from);
+            statement.setString(2, date_to);
+            statement.setInt(3, customers_id);
+            statement.setInt(4, accommodation_id);
+            statement.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    public void deleteBooking(int bookingId) {
+
+        try {
+            statement = connection.prepareStatement("DELETE FROM bookings WHERE booking_id = ?");
+            statement.setInt(1, bookingId);
+            statement.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }
