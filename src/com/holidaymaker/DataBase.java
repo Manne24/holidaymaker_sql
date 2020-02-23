@@ -33,7 +33,7 @@ public class DataBase {
             try {
                 statement.executeUpdate();
             } catch (SQLException e) {
-                System.out.println("Error message: " + "\n" + e.getMessage() + "\n");
+                System.out.println("Error: " + "\n" + e.getMessage() + "\n");
             }
 
 
@@ -50,22 +50,21 @@ public class DataBase {
             statement = connection.prepareStatement("SELECT * FROM customers WHERE first_name = ? ");
             statement.setString(1, first_name);
 
-
             try {
                 resultSet = statement.executeQuery();
             } catch (SQLException e) {
-                System.out.println("Error message: " + "\n" + e.getMessage() + "\n");
+                System.out.println("Error: " + "\n" + e.getMessage() + "\n");
             }
 
 
             while (resultSet.next()) {
-                String customerPrint =
+                String customerPrintResult =
                                 "ID: " + resultSet.getString("id") + "\n" +
                                 "FIRST NAME: " + resultSet.getString("first_name") + "\n" +
                                 "LAST NAME: " + resultSet.getString("last_name") + "\n" +
                                 "EMAIL: " + resultSet.getString("email") + "\n" +
                                 "PHONENUMBER: " + resultSet.getString("phone_nr");
-                System.out.println(customerPrint);
+                System.out.println(customerPrintResult);
             }
 
         } catch (Exception ex) {
@@ -73,25 +72,44 @@ public class DataBase {
         }
     }
 
-    public void filterRooms(String first_name, String last_name, String email, String phone_nr) {
+    public void filterRooms(String DateCheckIn, String DateCheckOut, int pool , int eveEnterainment, int childClub, int resutrant) {
 
         try {
-            statement = connection.prepareStatement("INSERT INTO customers (first_name, last_name, email, phone_nr) VALUES (?, ?, ?, ?)");
-            statement.setString(1, first_name);
-            statement.setString(2, last_name);
-            statement.setString(3, email);
-            statement.setString(4, phone_nr);
-            try {
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println("Error message: " + "\n" + e.getMessage() + "\n");
-            }
-
-
+            statement = connection.prepareStatement("SELECT room_number, `name` AS 'Hotel', city , country FROM bookings\n" +
+                    "JOIN rooms ON bookings.room_number_id = rooms.room_number\n" +
+                    "JOIN accommodations ON bookings.accommodation_id = accommodations.id\n" +
+                    "JOIN adress ON bookings.accommodation_id = adress.id \n" +
+                    "WHERE ( ? NOT BETWEEN date_from AND date_to)\n" +
+                    "AND ( ? NOT BETWEEN date_from AND date_to)\n" +
+                    "AND pool =  ? \n" +
+                    "AND evening_enterainment = ? \n" +
+                    "AND child_club = ?\n" +
+                    "AND resutrant =  ? ");
+            statement.setString(1, DateCheckIn);
+            statement.setString(2, DateCheckOut);
+            statement.setInt(3, pool);
+            statement.setInt(4, eveEnterainment);
+            statement.setInt(5, childClub);
+            statement.setInt(6, resutrant);
+            resultSet = statement.executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
+
+    public void printAvailableRooms() {
+        try {
+            while (resultSet.next()) {
+                String roomsPrint = "ROOM ID: " + resultSet.getString("room_number")
+                        + ", HOTEL: " + resultSet.getString("Hotel")
+                        + ", CITY: " + resultSet.getString("city")
+                        + ", COUNTRY: " + resultSet.getString("country");
+                System.out.println(roomsPrint);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    
 }
